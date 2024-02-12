@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:demo_app/components/saw.dart';
 import 'package:demo_app/components/background_tile.dart';
 import 'package:demo_app/components/collision_block.dart';
 import 'package:demo_app/components/fruit.dart';
@@ -67,6 +68,21 @@ class Level extends World with HasGameRef<DemoApp> {
               size: Vector2(spawnPoint.width, spawnPoint.height),
             );
             add(fruit);
+            break;
+          case 'Saw':
+            final isVertical = spawnPoint.properties.getValue('isVertical');
+            final offNeg = spawnPoint.properties.getValue('offNeg');
+            final offPos = spawnPoint.properties.getValue('offPos');
+
+            final saw = Saw(
+              isVertical: isVertical,
+              offNeg: offNeg,
+              offPos: offPos,
+              position: Vector2(spawnPoint.x, spawnPoint.y),
+              size: Vector2(spawnPoint.width, spawnPoint.height),
+            );
+            add(saw);
+            break;
           default:
         }
       }

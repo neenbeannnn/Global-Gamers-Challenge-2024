@@ -4,7 +4,6 @@ import 'package:demo_app/components/custom_hitbox.dart';
 import 'package:demo_app/demo_app.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flutter/foundation.dart';
 
 class Fruit extends SpriteAnimationComponent
     with HasGameRef<DemoApp>, CollisionCallbacks {
@@ -18,6 +17,7 @@ class Fruit extends SpriteAnimationComponent
           size: size,
         );
 
+  bool _collected = false;
   final double stepTime = 0.05;
   final hitbox = CustomHitbox(
     offsetX: 10,
@@ -28,13 +28,13 @@ class Fruit extends SpriteAnimationComponent
 
   @override
   FutureOr<void> onLoad() {
-    debugMode = true;
+    //debugMode = true;
     priority = -1;
-
     add(RectangleHitbox(
       position: Vector2(hitbox.offsetX, hitbox.offsetY),
       size: Vector2(hitbox.width, hitbox.height),
-      collisionType: CollisionType.passive,
+      collisionType: CollisionType
+          .passive, //only tracks collision with player not each other
     ));
     animation = SpriteAnimation.fromFrameData(
         game.images.fromCache('Items/Fruits/$fruit.png'),
@@ -47,7 +47,20 @@ class Fruit extends SpriteAnimationComponent
   }
 
   void collidedWithPlayer() {
-    // ignore: avoid_print
-    debugPrint('colliding with player');
+    if (!_collected) {
+      animation = SpriteAnimation.fromFrameData(
+          game.images.fromCache('Items/Fruits/Collected.png'),
+          SpriteAnimationData.sequenced(
+            amount: 6,
+            stepTime: stepTime,
+            textureSize: Vector2.all(32),
+            loop: false,
+          ));
+      _collected = true;
+    }
+    Future.delayed(
+      const Duration(milliseconds: 400),
+      () => removeFromParent(),
+    );
   }
 }
